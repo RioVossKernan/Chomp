@@ -17,7 +17,7 @@ public class MyPlayer {
         //writeBoardsToFile(boards);
 
         if(isSerial){
-            //getSerializedData();
+            getSerializedData();
         }
     }
 
@@ -26,15 +26,12 @@ public class MyPlayer {
     public Point move(Chip[][] pBoard) {
         Point move;
         Board board = chipArrayToIntArray(pBoard, false);
+        move = readFileForMove(board);
 
-//        if(isSerial){
-//            move = getMoveFromSerial(board);
-//        }else{
-//            move = readFileForMove(board);
-//        }
-
-        move = getMoveFromSerial(board);
-        return move; //flip, cus the chomp software stores points opposite the way I do it.
+        if(isSerial){
+            move = getMoveFromSerial(board);
+        }
+        return move;
     }
 
 //****************************************************************************************************************
