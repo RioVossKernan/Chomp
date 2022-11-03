@@ -11,7 +11,7 @@ public class MyPlayer {
 
     public MyPlayer() {
         //boards = findBestLosingMoves(findLossesAndWins(generateBoards(false), false), true);
-        boards = findLossesAndWins(generateBoards(false), false);
+        //boards = findLossesAndWins(generateBoards(false), false);
 
         //writeSerialized(boards);
         //writeBoardsToFile(boards);
