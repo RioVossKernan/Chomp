@@ -42,7 +42,6 @@ public class Chomp implements Runnable, MouseListener {
     public Chip[][] board;
     public boolean gameOver = false;
     public Image skull;
-    public int test;
 
     //sounds
     public SoundFile chipTaken;
