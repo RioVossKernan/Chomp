@@ -1,3 +1,7 @@
+//Rio Voss-Kernan
+//October 2022
+//Algorithm for creating a perfect chomp player with integration into the game itself
+
 import java.awt.*;
 import java.util.*;
 import java.io.*;
