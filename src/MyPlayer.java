@@ -9,13 +9,17 @@ import java.io.*;
 public class MyPlayer {
     final int scale = 10;
     boolean isWinning = false;
+
+    private int boardsLoaded;
+    public double percentLoaded;
+    private double logLoad;
     private ArrayList<Board> boards;
     private final ArrayList<int[]> losses = new ArrayList<>();
-    public boolean isSerial = true;
+    private boolean isSerial = false;
 
     public MyPlayer() {
         //boards = findBestLosingMoves(findLossesAndWins(generateBoards(false), false), true);
-        //boards = findLossesAndWins(generateBoards(false), false);
+        boards = findLossesAndWins(generateBoards(false), false);
 
         //writeSerialized(boards);
         //writeBoardsToFile(boards);
@@ -39,6 +43,14 @@ public class MyPlayer {
     }
 
 //****************************************************************************************************************
+    public void updateLoadingScreen(){
+        if(Math.log(boardsLoaded) - logLoad >= 0.25){
+            logLoad = Math.log(boardsLoaded);
+            percentLoaded = (logLoad/12.126) * 100;
+            System.out.println(percentLoaded);
+        }
+    }
+
     //Data generation methods
     public ArrayList<Board> generateBoards(boolean isPrint) {
         //A board is a array in integers. Each integer represents a amount of dots in a column (ex.  :: = 22)
@@ -173,6 +185,9 @@ public class MyPlayer {
                 b.isWin = -1;
                 losses.add(b.columns.clone());
             }
+
+            boardsLoaded++;
+            updateLoadingScreen();
         }
 
         //Print
@@ -417,7 +432,7 @@ public class MyPlayer {
     }
     public void getSerializedData(){
         try{
-            FileInputStream fileIn = new FileInputStream("/Users/RioVK/Desktop/Computer Programing/Chomp 2.1 Beta/boards.ser");
+            FileInputStream fileIn = new FileInputStream("/Users/RioVK/Desktop/Computer Programing/Chomp/boards.ser");
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
             boards = (ArrayList<Board>) objectIn.readObject();
             objectIn.close();
