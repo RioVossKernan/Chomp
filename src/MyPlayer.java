@@ -13,19 +13,21 @@ public class MyPlayer {
     private int boardsLoaded;
     public double percentLoaded;
     private double logLoad;
-    private ArrayList<Board> boards;
+    public ArrayList<Board> boards;
     private final ArrayList<int[]> losses = new ArrayList<>();
     private boolean isSerial = false;
 
+    private SerialReader serialReader;
+
     public MyPlayer() {
         //boards = findBestLosingMoves(findLossesAndWins(generateBoards(false), false), true);
-        boards = findLossesAndWins(generateBoards(false), false);
+        //boards = findLossesAndWins(generateBoards(false), false);
 
         //writeSerialized(boards);
         //writeBoardsToFile(boards);
 
         if(isSerial){
-            getSerializedData();
+            serialReader.start();
         }
     }
 
@@ -37,7 +39,7 @@ public class MyPlayer {
         move = readFileForMove(board);
 
         if(isSerial){
-            move = getMoveFromSerial(board);
+            move = getMove(board,serialReader.boards);
         }
         return move;
     }
@@ -430,25 +432,15 @@ public class MyPlayer {
             i.printStackTrace();
         }
     }
-    public void getSerializedData(){
-        try{
-            FileInputStream fileIn = new FileInputStream("/Users/RioVK/Desktop/Computer Programing/Chomp/boards.ser");
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-            boards = (ArrayList<Board>) objectIn.readObject();
-            objectIn.close();
-            fileIn.close();
-        }catch(IOException | ClassNotFoundException i){
-            i.printStackTrace();
-        }
-    }
-    public Point getMoveFromSerial(Board board){
+
+    public Point getMove(Board board, ArrayList<Board> pBoards){
         Point move = new Point();
         if(board.isWin == -1){
             isWinning = true;
         }else{
             isWinning = false;
         }
-        for(Board b: boards){
+        for(Board b: pBoards){
             if(Arrays.equals(b.columns,board.columns)){
                 move = b.bestMove;
             }
