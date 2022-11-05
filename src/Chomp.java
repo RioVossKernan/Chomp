@@ -37,6 +37,7 @@ public class Chomp implements Runnable, MouseListener {
 
     public Chip[][] board;
     public boolean gameOver = false;
+    private boolean isSerial = true;
     public Image skull;
 
     //sounds
@@ -51,6 +52,7 @@ public class Chomp implements Runnable, MouseListener {
     public MyPlayer aiPlayer;
     private SerialReader serialReader;
     private ChompSolver chompSolver;
+
 
 
     // Main method definition
@@ -84,8 +86,12 @@ public class Chomp implements Runnable, MouseListener {
         //players
         chompSolver = new ChompSolver(10,false);
         serialReader = new SerialReader();
-        chompSolver.start();
-        //serialReader.start();
+
+        if(isSerial){
+            serialReader.start();
+        }else{
+            chompSolver.start();
+        }
 
         randomPlayer = new Player();
         aiPlayer = new MyPlayer();
@@ -146,9 +152,7 @@ public class Chomp implements Runnable, MouseListener {
         //draw border
         g.setStroke(new BasicStroke(5));
         g.drawRect(xOffset - 10, yOffset - 10, 500 + 20, 500 + 20);
-
-        if(chompSolver.percentLoaded < 100){
-        //if(false){
+        if((chompSolver.percentLoaded < 100 && !isSerial) || (serialReader.percentLoaded < 100 && isSerial)){
             int barLength = 400;
             g.setColor(Color.BLACK);
             g.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
@@ -157,7 +161,11 @@ public class Chomp implements Runnable, MouseListener {
             g.fillRect(250,350,barLength,25);
             //g.setColor(Color.getHSBColor(0.3f, 1f, 0.7f));
             g.setColor(Color.RED);
-            g.fillRect(250,350,(int)((barLength)*(chompSolver.percentLoaded/100)),25);
+            if(isSerial) {
+                g.fillRect(250, 350, (int) ((barLength) * (serialReader.percentLoaded / 100)), 25);
+            }else{
+                g.fillRect(250, 350, (int) ((barLength) * (chompSolver.percentLoaded / 100)), 25);
+            }
         }else {
 
             if (!gameOver) {
@@ -201,6 +209,7 @@ public class Chomp implements Runnable, MouseListener {
                 g.drawString("GAME OVER ", 240, 360);
             }
 
+            /*
             g.setColor(Color.LIGHT_GRAY);
             g.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
             if (aiPlayer.isWinning) {
@@ -208,6 +217,8 @@ public class Chomp implements Runnable, MouseListener {
             } else {
                 g.drawString("You could Win, but you won't", 275, 645);
             }
+            */
+
         }
 
         //leave these two lines of code as the last lines of the render( ) method
@@ -345,7 +356,12 @@ public class Chomp implements Runnable, MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!gameOver) {
-                    Point theMove = aiPlayer.move(board,chompSolver.boards);
+                    Point theMove;
+                    if(isSerial){
+                        theMove = aiPlayer.move(board,serialReader.boards);
+                    }else {
+                        theMove = aiPlayer.move(board, chompSolver.boards);
+                    }
                     int row = (int) theMove.getX();
                     int col = (int) theMove.getY();
 
