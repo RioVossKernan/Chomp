@@ -44,11 +44,13 @@ public class Chomp implements Runnable, MouseListener {
     public SoundFile youLose;
 
     //buttons
-    public JButton newGame, threeBoard, randomBoard, computerPlayer, myChomp;
+    public JButton newGame, threeBoard, randomBoard, perfectPlayer;
 
     //players
     public Player randomPlayer;
     public MyPlayer aiPlayer;
+    private SerialReader serialReader;
+    private ChompSolver chompSolver;
 
 
     // Main method definition
@@ -80,6 +82,11 @@ public class Chomp implements Runnable, MouseListener {
 
 
         //players
+        chompSolver = new ChompSolver(10,false);
+        serialReader = new SerialReader();
+        chompSolver.start();
+        //serialReader.start();
+
         randomPlayer = new Player();
         aiPlayer = new MyPlayer();
     }
@@ -123,15 +130,15 @@ public class Chomp implements Runnable, MouseListener {
         Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
         g.clearRect(0, 0, WIDTH, HEIGHT);
 
-        g.setColor(Color.getHSBColor(0.3f,1f,0.3f));
-        g.fillRect(0,0,WIDTH,HEIGHT);
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
 
         //Put all your code for drawing things on the screen here
-        g.setColor(Color.LIGHT_GRAY);
-        g.setFont(new Font("Arial", Font.BOLD, 70));
-        g.drawString("RioVK's CHOMP", 160, 75);
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Poppins-Bold", Font.BOLD, 70));
+        g.drawString("        C H O M P", 160, 75);
 
-        g.setColor(Color.lightGray);
+        g.setColor(Color.WHITE);
         g.fillRect(xOffset, yOffset, 500, 500);
         g.setColor(Color.BLACK);
         g.drawRect(xOffset, yOffset, 500, 500);
@@ -140,53 +147,67 @@ public class Chomp implements Runnable, MouseListener {
         g.setStroke(new BasicStroke(5));
         g.drawRect(xOffset - 10, yOffset - 10, 500 + 20, 500 + 20);
 
-        if(!gameOver) {
-            g.setStroke(new BasicStroke(2));
-            //draw Grid
-            for (int r = 0; r < board[0].length; r++) {
-                for (int c = 0; c < board[0].length; c++) {
-                    g.drawRect(board[r][c].xpos, board[r][c].ypos, chipWidth, chipWidth);
-                }
-            }
+        if(chompSolver.percentLoaded < 100){
+        //if(false){
+            int barLength = 400;
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
+            g.drawString("Loading...",385,335);
+            g.setColor(Color.lightGray);
+            g.fillRect(250,350,barLength,25);
+            //g.setColor(Color.getHSBColor(0.3f, 1f, 0.7f));
+            g.setColor(Color.RED);
+            g.fillRect(250,350,(int)((barLength)*(chompSolver.percentLoaded/100)),25);
+        }else {
 
-            //draw Chips
-            for (int r = 0; r < board[0].length; r++) {
-                for (int c = 0; c < board[0].length; c++) {
-                    if (board[r][c].isAlive) {
-                        g.setColor(Color.RED);
-                        g.fillOval(board[r][c].xpos + chipBorder, board[r][c].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
-                        g.setColor(Color.BLACK);
-                        g.drawOval(board[r][c].xpos + chipBorder, board[r][c].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
-                        //g.drawRect(board[r][c].xpos,board[r][c].ypos,chipWidth,chipWidth);
-                        //g.drawString(r+"", board[r][c].xpos + chipBorder, board[r][c].ypos + chipBorder+40 );
-
+            if (!gameOver) {
+                g.setStroke(new BasicStroke(2));
+                //draw Grid
+                for (int r = 0; r < board[0].length; r++) {
+                    for (int c = 0; c < board[0].length; c++) {
+                        g.drawRect(board[r][c].xpos, board[r][c].ypos, chipWidth, chipWidth);
                     }
                 }
+
+                //draw Chips
+                for (int r = 0; r < board[0].length; r++) {
+                    for (int c = 0; c < board[0].length; c++) {
+                        if (board[r][c].isAlive) {
+                            g.setColor(Color.YELLOW);
+                            g.fillOval(board[r][c].xpos + chipBorder, board[r][c].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
+                            g.setColor(Color.BLACK);
+                            g.drawOval(board[r][c].xpos + chipBorder, board[r][c].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
+                            //g.drawRect(board[r][c].xpos,board[r][c].ypos,chipWidth,chipWidth);
+                            //g.drawString(r+"", board[r][c].xpos + chipBorder, board[r][c].ypos + chipBorder+40 );
+
+                        }
+                    }
+                }
+
+                //draw poison chip
+                if (board[0][0].isAlive) {
+                    g.setColor(Color.RED);
+                    g.fillOval(board[0][0].xpos + chipBorder, board[0][0].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
+                    g.setColor(Color.BLACK);
+                    g.drawOval(board[0][0].xpos + chipBorder, board[0][0].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
+                    //g.drawRect(board[r][c].xpos,board[r][c].ypos,chipWidth,chipWidth);
+                    g.drawImage(skull, board[0][0].xpos + chipBorder, board[0][0].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder, null);
+                }
             }
 
-            //draw poison chip
-            if (board[0][0].isAlive) {
-                g.setColor(Color.BLUE);
-                g.fillOval(board[0][0].xpos + chipBorder, board[0][0].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
-                g.setColor(Color.BLACK);
-                g.drawOval(board[0][0].xpos + chipBorder, board[0][0].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
-                //g.drawRect(board[r][c].xpos,board[r][c].ypos,chipWidth,chipWidth);
-                g.drawImage(skull,board[0][0].xpos + chipBorder, board[0][0].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder,null);
+            if (gameOver) {
+                g.setColor(Color.RED);
+                g.setFont(new Font("Poppins-Bold", Font.BOLD, 70));
+                g.drawString("GAME OVER ", 240, 360);
             }
-        }
 
-        if (gameOver) {
-            g.setColor(Color.getHSBColor(0.3f,1f,0.3f));
-            g.setFont(new Font("TimesRoman", Font.BOLD, 70));
-            g.drawString("GAME OVER ", 235, 300);
-        }
-
-        g.setColor(Color.LIGHT_GRAY);
-        g.setFont(new Font("TimesRoman", Font.BOLD, 25));
-        if(aiPlayer.isWinning){
-            g.drawString("You will Lose", 350,645);
-        }else{
-            g.drawString("You could Win, but you won't", 275,645);
+            g.setColor(Color.LIGHT_GRAY);
+            g.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
+            if (aiPlayer.isWinning) {
+                g.drawString("You will Lose", 350, 645);
+            } else {
+                g.drawString("You could Win, but you won't", 275, 645);
+            }
         }
 
         //leave these two lines of code as the last lines of the render( ) method
@@ -216,8 +237,8 @@ public class Chomp implements Runnable, MouseListener {
         buttons.add(newGame);
         buttons.add(randomBoard);
         buttons.add(threeBoard);
-        buttons.add(computerPlayer);
-        buttons.add(myChomp);
+        buttons.add(perfectPlayer);
+        //buttons.add(myChomp);
         panel.add(buttons, BorderLayout.SOUTH);
 
 
@@ -239,7 +260,7 @@ public class Chomp implements Runnable, MouseListener {
     public void setupButtons(){
         //create buttons
         newGame = new JButton("New Game");
-        newGame.setFont(new Font("Arial", Font.BOLD, 25));
+        newGame.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
         newGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -256,7 +277,7 @@ public class Chomp implements Runnable, MouseListener {
 
         //newGame.setPreferredSize(new Dimension(150,50));
         randomBoard = new JButton("Random Board");
-        randomBoard.setFont(new Font("Arial", Font.BOLD, 25));
+        randomBoard.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
         randomBoard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -283,7 +304,7 @@ public class Chomp implements Runnable, MouseListener {
         });
 
         threeBoard = new JButton("3x3 Board");
-        threeBoard.setFont(new Font("Arial", Font.BOLD, 25));
+        threeBoard.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
         threeBoard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -318,47 +339,22 @@ public class Chomp implements Runnable, MouseListener {
             }
         });
 
-        computerPlayer = new JButton("Computer");
-        computerPlayer.setFont(new Font("Arial", Font.BOLD, 25));
-        computerPlayer.addActionListener(new ActionListener() {
+        perfectPlayer = new JButton("Computer");
+        perfectPlayer.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
+        perfectPlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!gameOver) {
-                    Point theMove = aiPlayer.move(board);
+                    Point theMove = aiPlayer.move(board,chompSolver.boards);
                     int row = (int) theMove.getX();
                     int col = (int) theMove.getY();
 
                     if (row >= 0 && col >= 0 && board[row][col].isAlive) {
                         updateBoard(row, col);
                     }
-
                 }
             }
         });
-
-
-        // randomBoard.setPreferredSize(new Dimension(200,50));
-        myChomp = new JButton("My Player");
-        myChomp.setFont(new Font("Arial", Font.BOLD, 25));
-        myChomp.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!gameOver) {
-                    Point theMove = aiPlayer.move(board);
-                    int row = (int) theMove.getX();
-                    int col = (int) theMove.getY();
-
-                    if (row >= 0 && col >= 0 && board[row][col].isAlive) {
-                        //chip is alive
-                        //fix board
-                        updateBoard(row, col);
-                    }
-                }
-            }
-        });
-        //myChomp.setPreferredSize(new Dimension(150,50));
-
-
     }
 
     public void pause(int time) {
