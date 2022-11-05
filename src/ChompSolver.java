@@ -1,7 +1,5 @@
 import java.awt.*;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -9,13 +7,12 @@ public class ChompSolver implements Runnable{
 
     ArrayList<Board> boards;
     private Thread t;
-    int scale;
+    private final int scale;
     private final ArrayList<int[]> losses = new ArrayList<>();
-    boolean isComplex;
+    private final boolean isComplex;
 
     private int boardsLoaded;
     public double percentLoaded;
-    private double logLoad;
 
     public ChompSolver(int scale, boolean isComplex){
         boards = new ArrayList<>();
@@ -303,20 +300,62 @@ public class ChompSolver implements Runnable{
         return new Point(indexOfChange, heightOfChange);
     }
 
-
     public void updateLoadingScreen(){
         percentLoaded = (boardsLoaded/184755d) * 100;
         System.out.println(percentLoaded);
     }
 
+    //DATA STORAGE
+    //write boards to a file
+    public void writeBoardsToTextFile(ArrayList<Board> boards){
+        //create file
+        try {
+            File myObj = new File("boards.txt");
+            if (myObj.createNewFile()) {
+                System.out.println("File created: " + myObj.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
 
+        //write to file
+        try {
+            FileWriter myWriter = new FileWriter("boards.txt");
 
+            for (Board i : boards) {
+                for(int w: i.columns) {
+                    myWriter.write(w + "");
+                }
+                myWriter.write(" " + i.bestMove.x + " " + i.bestMove.y);
+                if(i.isWin == -1){
+                    myWriter.write(" L" + "\n");
+                }else{
+                    myWriter.write(" W" + "\n");
+                }
+            }
 
-
-
-
-
-
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+    public void writeSerialized(ArrayList<Board> boards){
+        try {
+            FileOutputStream fileStream = new FileOutputStream("/Users/RioVK/Desktop/Computer Programing/Chomp 2.1 Beta/boards.ser");
+            ObjectOutputStream objectStream = new ObjectOutputStream(fileStream);
+            objectStream.writeObject(boards);
+            objectStream.close();
+            fileStream.close();
+        }
+        catch(IOException i){
+            i.printStackTrace();
+        }
+    }
 }
 
 

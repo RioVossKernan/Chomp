@@ -1,14 +1,13 @@
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class SerialReader implements Runnable{
 
     ArrayList<Board> boards;
     private Thread t;
     public double percentLoaded;
-
 
     public SerialReader(){
         boards = new ArrayList<>();
@@ -27,6 +26,7 @@ public class SerialReader implements Runnable{
     }
 
 //***********************************************************************************
+    //read serial file
     public ArrayList<Board> getSerializedData(){
         ArrayList<Board> boards = new ArrayList<>();
         percentLoaded = 25;
@@ -47,13 +47,46 @@ public class SerialReader implements Runnable{
         return boards;
     }
 
+    //read text file
+    public Point readFileForMove(Board pBoard){
+        Point move = new Point();
 
+        //try-catch so it doesn't crash
+        try {
+            //Build File Reader
+            File myObj = new File("boards.txt");
+            Scanner myReader = new Scanner(myObj);
 
+            //loop until we found the desired board in the file
+            boolean foundBoard = false;
+            while (!foundBoard) {
+                String boardString = myReader.next(); //get board from file
+                StringBuilder pBoardString = new StringBuilder(); //turn pBoard into string so we can compare them
+                for(int i: pBoard.columns){
+                    pBoardString.append(i);
+                }
 
+                if(boardString.equals(pBoardString.toString())){ //if fileBoard is the same as pBoard, finish the loop, its been found
+                    foundBoard = true;
+                    //System.out.println(boardString);
+                }else {
+                    myReader.nextLine();
+                }
+            }
 
+            //the moves = the next integers after that board, because that's how I have the file written, EX. "Board xMove yMove"
+            move.y = myReader.nextInt();
+            move.x = myReader.nextInt();
 
+            myReader.close();
 
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
 
+        return move;
+    }
 }
 
 
