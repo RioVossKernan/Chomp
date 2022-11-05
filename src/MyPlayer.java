@@ -13,13 +13,8 @@ public class MyPlayer {
     public ArrayList<Board> boards = new ArrayList<>();
     private boolean isSerial = false;
     //private SerialReader serialReader = new SerialReader();
-    //private ChompSolver chompSolver = new ChompSolver(scale,false);
-
 
     public MyPlayer() {
-        //boards = findBestLosingMoves(findLossesAndWins(generateBoards(false), false), true);
-        //boards = findLossesAndWins(generateBoards(false), false);
-
         //writeSerialized(boards);
         //writeBoardsToFile(boards);
 

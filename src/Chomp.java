@@ -44,7 +44,7 @@ public class Chomp implements Runnable, MouseListener {
     public SoundFile youLose;
 
     //buttons
-    public JButton newGame, threeBoard, randomBoard, computerPlayer, myChomp;
+    public JButton newGame, threeBoard, randomBoard, perfectPlayer;
 
     //players
     public Player randomPlayer;
@@ -147,8 +147,8 @@ public class Chomp implements Runnable, MouseListener {
         g.setStroke(new BasicStroke(5));
         g.drawRect(xOffset - 10, yOffset - 10, 500 + 20, 500 + 20);
 
-        //if(chompSolver.percentLoaded < 100){
-        if(false){
+        if(chompSolver.percentLoaded < 100){
+        //if(false){
             int barLength = 400;
             g.setColor(Color.BLACK);
             g.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
@@ -210,7 +210,6 @@ public class Chomp implements Runnable, MouseListener {
             }
         }
 
-
         //leave these two lines of code as the last lines of the render( ) method
         g.dispose();
         bufferStrategy.show();
@@ -238,7 +237,7 @@ public class Chomp implements Runnable, MouseListener {
         buttons.add(newGame);
         buttons.add(randomBoard);
         buttons.add(threeBoard);
-        buttons.add(computerPlayer);
+        buttons.add(perfectPlayer);
         //buttons.add(myChomp);
         panel.add(buttons, BorderLayout.SOUTH);
 
@@ -340,9 +339,9 @@ public class Chomp implements Runnable, MouseListener {
             }
         });
 
-        computerPlayer = new JButton("Computer");
-        computerPlayer.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
-        computerPlayer.addActionListener(new ActionListener() {
+        perfectPlayer = new JButton("Computer");
+        perfectPlayer.setFont(new Font("Poppins-Bold", Font.BOLD, 25));
+        perfectPlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!gameOver) {
@@ -356,30 +355,6 @@ public class Chomp implements Runnable, MouseListener {
                 }
             }
         });
-
-
-        // randomBoard.setPreferredSize(new Dimension(200,50));
-//        myChomp = new JButton("My Player");
-//        myChomp.setFont(new Font("Arial", Font.BOLD, 25));
-//        myChomp.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                if (!gameOver) {
-//                    Point theMove = aiPlayer.move(board,chompSolver.boards);
-//                    int row = (int) theMove.getX();
-//                    int col = (int) theMove.getY();
-//
-//                    if (row >= 0 && col >= 0 && board[row][col].isAlive) {
-//                        //chip is alive
-//                        //fix board
-//                        updateBoard(row, col);
-//                    }
-//                }
-//            }
-//        });
-        //myChomp.setPreferredSize(new Dimension(150,50));
-
-
     }
 
     public void pause(int time) {
