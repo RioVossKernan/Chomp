@@ -12,8 +12,8 @@ public class MyPlayer {
 
     public ArrayList<Board> boards = new ArrayList<>();
     private boolean isSerial = false;
-    private SerialReader serialReader = new SerialReader();
-    private ChompSolver chompSolver = new ChompSolver(scale,false);
+    //private SerialReader serialReader = new SerialReader();
+    //private ChompSolver chompSolver = new ChompSolver(scale,false);
 
 
     public MyPlayer() {
@@ -24,25 +24,19 @@ public class MyPlayer {
         //writeBoardsToFile(boards);
 
         if(isSerial){
-            serialReader.start();
+            //serialReader.start();
         }else{
-            chompSolver.start();
+            //chompSolver.start();
         }
     }
 
     //add your code to return the row and the column of the chip you want to take.
     //you'll be returning a data type called Point which consists of two integers.
-    public Point move(Chip[][] pBoard) {
-        Point move;
+    public Point move(Chip[][] pBoard, ArrayList<Board> boards) {
+
         Board board = chipArrayToIntArray(pBoard, false);
+        Point move = getMove(board,boards);
 
-        //move = readFileForMove(board);
-
-        if(isSerial){
-            move = getMove(board,serialReader.boards);
-        }else{
-            move = getMove(board,chompSolver.boards);
-        }
         return move;
     }
 

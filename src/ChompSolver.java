@@ -308,9 +308,10 @@ public class ChompSolver implements Runnable{
         //if(Math.log(boardsLoaded) - logLoad >= 0.25){
 //            logLoad = Math.log(boardsLoaded);
 //            percentLoaded = (logLoad/12.126) * 100;
-//            System.out.println(logLoad);
-
         percentLoaded = (boardsLoaded/184755d) * 100;
+        System.out.println(percentLoaded);
+
+
     }
 
 
