@@ -52,6 +52,7 @@ public class Chomp implements Runnable, MouseListener {
     public MyPlayer aiPlayer;
     private final SerialReader serialReader;
     private final ChompSolver chompSolver;
+    private long startTime = System.currentTimeMillis();
 
 
     // Main method definition
@@ -124,6 +125,7 @@ public class Chomp implements Runnable, MouseListener {
     }
 
     public void run() {
+        startTime = System.currentTimeMillis();
         //for the moment we will loop things forever.
         while (true) {
             render();  // paint the graphics
@@ -161,7 +163,9 @@ public class Chomp implements Runnable, MouseListener {
             //g.setColor(Color.getHSBColor(0.3f, 1f, 0.7f));
             g.setColor(Color.RED);
             if(isSerial) {
-                g.fillRect(250, 350, (int) ((barLength) * (serialReader.percentLoaded / 100)), 25);
+                double percentLoaded = (System.currentTimeMillis()-startTime)/8000d;
+                if(percentLoaded>1){percentLoaded = 1;}
+                g.fillRect(250, 350, (int)(((barLength) * percentLoaded)), 25);
             }else{
                 g.fillRect(250, 350, (int) ((barLength) * (chompSolver.percentLoaded / 100)), 25);
             }

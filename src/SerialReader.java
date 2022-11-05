@@ -27,6 +27,26 @@ public class SerialReader implements Runnable{
 
 //***********************************************************************************
     //read serial file
+//    public ArrayList<Board> getSerializedData(){
+//        ArrayList<Board> boards = new ArrayList<>();
+//        percentLoaded = 25;
+//        try{
+//            FileInputStream fileIn = new FileInputStream("/Users/RioVK/Desktop/Computer Programing/Chomp/boards.ser");
+//            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+//            percentLoaded = 50;
+//            boards = (ArrayList<Board>) objectIn.readObject();
+//            percentLoaded = 75;
+//            objectIn.close();
+//            fileIn.close();
+//        }catch(IOException | ClassNotFoundException i){
+//            i.printStackTrace();
+//        }
+//        percentLoaded = 100;
+//        System.out.println("Serial Reading Complete");
+//        System.out.println(percentLoaded);
+//        return boards;
+//    }
+
     public ArrayList<Board> getSerializedData(){
         ArrayList<Board> boards = new ArrayList<>();
         percentLoaded = 25;
@@ -46,6 +66,7 @@ public class SerialReader implements Runnable{
         System.out.println(percentLoaded);
         return boards;
     }
+
 
     //read text file
     public Point readFileForMove(Board pBoard){
