@@ -19,7 +19,7 @@ public class MyPlayer {
 
     public MyPlayer() {
         //boards = findBestLosingMoves(findLossesAndWins(generateBoards(false), false), true);
-        boards = findLossesAndWins(generateBoards(false), false);
+        //boards = findLossesAndWins(generateBoards(false), false);
 
         //writeSerialized(boards);
         //writeBoardsToFile(boards);
@@ -37,7 +37,7 @@ public class MyPlayer {
         move = readFileForMove(board);
 
         if(isSerial){
-            move = getMoveFromSerial(board);
+            move = getMove(board,boards);
         }
         return move;
     }
@@ -441,18 +441,52 @@ public class MyPlayer {
             i.printStackTrace();
         }
     }
-    public Point getMoveFromSerial(Board board){
+    public Point getMove(Board board, ArrayList<Board> pBoards){
         Point move = new Point();
         if(board.isWin == -1){
             isWinning = true;
         }else{
             isWinning = false;
         }
-        for(Board b: boards){
-            if(Arrays.equals(b.columns,board.columns)){
-                move = b.bestMove;
+
+        boolean match = false;
+        for(int i = 0; i < pBoards.size(); i++){
+            if(Arrays.equals(pBoards.get(i).columns,board.columns)){
+                move = pBoards.get(i).bestMove;
+            }
+
+            for(int x=0; x< 10; x++) {
+                if (pBoards.get(i).columns[x] == board.columns[x]){
+                    match = true;
+                }else{
+                    match = false;
+                    if(x == 1){
+                        i = 9;
+                    }else if(x == 2){
+                        i = 64;
+                    }else if(x == 3){
+                        i = 283;
+                    }else if(x == 4){
+                        i = 999;
+                    }else if(x == 5){
+                        i = 3001;
+                    }else if(x == 6){
+                        i = 8006;
+                    }else if(x == 7){
+                        i = 19446;
+                    }else if(x == 8){
+                        i = 43456;
+                    }else if(x == 9){
+                        i = 92376;
+                    }
+                }
+            }
+            if(match){
+                move = pBoards.get(i).bestMove;
+                break;
             }
         }
+
         move = new Point(move.y,move.x);
         return move;
     }
