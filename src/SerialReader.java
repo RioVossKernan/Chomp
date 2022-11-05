@@ -8,9 +8,33 @@ public class SerialReader implements Runnable{
     ArrayList<Board> boards;
     private Thread t;
 
+
     public SerialReader(){
         boards = new ArrayList<>();
     }
+
+    @Override
+    public void run() {
+        boards = getSerializedData();
+    }
+
+    public void start() {
+        if (t == null) {
+            t = new Thread(this, "readingSerial");
+            t.start();
+        }
+    }
+
+//***********************************************************************************
+
+
+//    public void updateLoadingScreen(){
+//        if(Math.log(boardsLoaded) - logLoad >= 0.25){
+//            logLoad = Math.log(boardsLoaded);
+//            percentLoaded = (logLoad/12.126) * 100;
+//            System.out.println(percentLoaded);
+//        }
+//    }
 
     public ArrayList<Board> getSerializedData(){
         ArrayList<Board> boards = new ArrayList<>();
@@ -26,17 +50,13 @@ public class SerialReader implements Runnable{
         return boards;
     }
 
-    @Override
-    public void run() {
-        boards = getSerializedData();
-    }
 
-    public void start(){
-        if (t == null) {
-            t = new Thread (this, "readingSerial");
-            t.start ();
-        }
-    }
+
+
+
+
+
+
 }
 
 

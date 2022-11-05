@@ -13,11 +13,10 @@ public class MyPlayer {
     private int boardsLoaded;
     public double percentLoaded;
     private double logLoad;
-    public ArrayList<Board> boards;
+    public ArrayList<Board> boards = new ArrayList<>();
     private final ArrayList<int[]> losses = new ArrayList<>();
     private boolean isSerial = false;
-
-    private SerialReader serialReader;
+    private SerialReader serialReader = new SerialReader();
 
     public MyPlayer() {
         //boards = findBestLosingMoves(findLossesAndWins(generateBoards(false), false), true);
@@ -45,13 +44,6 @@ public class MyPlayer {
     }
 
 //****************************************************************************************************************
-    public void updateLoadingScreen(){
-        if(Math.log(boardsLoaded) - logLoad >= 0.25){
-            logLoad = Math.log(boardsLoaded);
-            percentLoaded = (logLoad/12.126) * 100;
-            System.out.println(percentLoaded);
-        }
-    }
 
     //Data generation methods
     public ArrayList<Board> generateBoards(boolean isPrint) {
@@ -188,8 +180,8 @@ public class MyPlayer {
                 losses.add(b.columns.clone());
             }
 
-            boardsLoaded++;
-            updateLoadingScreen();
+//            boardsLoaded++;
+//            updateLoadingScreen();
         }
 
         //Print
@@ -215,6 +207,7 @@ public class MyPlayer {
 
         return boards;
     }
+
     public ArrayList<Board> findBestLosingMoves(ArrayList<Board> boards, boolean isPrint) {
         //find best moves for situations where you should lose no matter what
         //loop through losses
@@ -432,7 +425,6 @@ public class MyPlayer {
             i.printStackTrace();
         }
     }
-
     public Point getMove(Board board, ArrayList<Board> pBoards){
         Point move = new Point();
         if(board.isWin == -1){
