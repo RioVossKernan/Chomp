@@ -49,6 +49,8 @@ public class Chomp implements Runnable, MouseListener {
     //players
     public Player randomPlayer;
     public MyPlayer aiPlayer;
+    private SerialReader serialReader;
+    private ChompSolver chompSolver;
 
 
     // Main method definition
@@ -80,6 +82,9 @@ public class Chomp implements Runnable, MouseListener {
 
 
         //players
+        chompSolver = new ChompSolver(10,false);
+        serialReader = new SerialReader();
+
         randomPlayer = new Player();
         aiPlayer = new MyPlayer();
     }
