@@ -37,7 +37,7 @@ public class Chomp implements Runnable, MouseListener {
 
     public Chip[][] board;
     public boolean gameOver = false;
-    private boolean isSerial = true;
+    private final boolean isSerial = true;
     public Image skull;
 
     //sounds
@@ -50,9 +50,8 @@ public class Chomp implements Runnable, MouseListener {
     //players
     public Player randomPlayer;
     public MyPlayer aiPlayer;
-    private SerialReader serialReader;
-    private ChompSolver chompSolver;
-
+    private final SerialReader serialReader;
+    private final ChompSolver chompSolver;
 
 
     // Main method definition
@@ -173,7 +172,7 @@ public class Chomp implements Runnable, MouseListener {
                 //draw Grid
                 for (int r = 0; r < board[0].length; r++) {
                     for (int c = 0; c < board[0].length; c++) {
-                        g.drawRect(board[r][c].xpos, board[r][c].ypos, chipWidth, chipWidth);
+                        g.drawRect(board[r][c].xPos, board[r][c].yPos, chipWidth, chipWidth);
                     }
                 }
 
@@ -182,9 +181,9 @@ public class Chomp implements Runnable, MouseListener {
                     for (int c = 0; c < board[0].length; c++) {
                         if (board[r][c].isAlive) {
                             g.setColor(Color.YELLOW);
-                            g.fillOval(board[r][c].xpos + chipBorder, board[r][c].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
+                            g.fillOval(board[r][c].xPos + chipBorder, board[r][c].yPos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
                             g.setColor(Color.BLACK);
-                            g.drawOval(board[r][c].xpos + chipBorder, board[r][c].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
+                            g.drawOval(board[r][c].xPos + chipBorder, board[r][c].yPos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
                             //g.drawRect(board[r][c].xpos,board[r][c].ypos,chipWidth,chipWidth);
                             //g.drawString(r+"", board[r][c].xpos + chipBorder, board[r][c].ypos + chipBorder+40 );
 
@@ -195,11 +194,11 @@ public class Chomp implements Runnable, MouseListener {
                 //draw poison chip
                 if (board[0][0].isAlive) {
                     g.setColor(Color.RED);
-                    g.fillOval(board[0][0].xpos + chipBorder, board[0][0].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
+                    g.fillOval(board[0][0].xPos + chipBorder, board[0][0].yPos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
                     g.setColor(Color.BLACK);
-                    g.drawOval(board[0][0].xpos + chipBorder, board[0][0].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
+                    g.drawOval(board[0][0].xPos + chipBorder, board[0][0].yPos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder);
                     //g.drawRect(board[r][c].xpos,board[r][c].ypos,chipWidth,chipWidth);
-                    g.drawImage(skull, board[0][0].xpos + chipBorder, board[0][0].ypos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder, null);
+                    g.drawImage(skull, board[0][0].xPos + chipBorder, board[0][0].yPos + chipBorder, chipWidth - 2 * chipBorder, chipWidth - 2 * chipBorder, null);
                 }
             }
 
