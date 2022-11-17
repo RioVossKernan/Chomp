@@ -19,7 +19,7 @@ public class ChompSolver implements Runnable{
         this.isComplex = isComplex;
         this.scale = scale;
     }
-
+    
     @Override
     public void run() {
         boards = solveChomp(isComplex);
