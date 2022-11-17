@@ -230,7 +230,7 @@ public class Chomp implements Runnable, MouseListener {
     }
 
     private void setUpGraphics() {
-        frame = new JFrame("Chomp 2.0  2021");   //Create the program window or frame.  Names it.
+        frame = new JFrame("RioVK's Chomp 3.0");   //Create the program window or frame.  Names it.
 
         panel = (JPanel) frame.getContentPane();  //sets up a JPanel which is what goes in the frame
         panel.setPreferredSize(new Dimension(WIDTH - 100, HEIGHT - 100));  //sizes the JPanel
